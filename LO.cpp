@@ -1,7 +1,4 @@
-﻿// LO.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 using namespace std;
 
@@ -13,7 +10,14 @@ public:
     ~List();
 
     void push_back(T data);
+    void push_front(T data);
+    void pop_front();
+    void pop_back();
+    void insert(T value, int index);
+    void remove_add(int index);
+    void clear();
     int GetSize() { return Size; };
+
 
     T& operator[](const int index);
 
@@ -51,6 +55,7 @@ List<T>::List()
 template<typename T>
 List<T>::~List()
 {
+    clear();
 }
 
 template<typename T>
@@ -71,6 +76,92 @@ void List<T>::push_back(T data)
         current->pNext = new Node<T>(data);
     }
     Size++;
+}
+
+template<typename T>
+void List<T>::push_front(T data)
+{
+    head = new Node<T>(data, head);
+    Size++;
+}
+
+template<typename T>
+void List<T>::pop_front()
+{
+    Node<T>* temp = head;
+    head = head->pNext;
+    delete temp;
+    Size--;
+
+}
+
+template<typename T>
+void List<T>::pop_back()
+{
+    remove_add(Size - 1);
+}
+
+template<typename T>
+void List<T>::insert(T value, int index)
+{
+    if (index == 0)
+    {
+        push_front(value);
+    }
+    else 
+    {
+        if (index >= Size)
+        {
+            push_back(value);
+        }
+        else 
+        {
+            Node<T>* previous = this->head;
+            for (int i = 0; i < index - 1; i++)
+            {
+                previous = previous->pNext;
+            }
+ 
+            previous->pNext = new Node<T>(value, previous->pNext);
+            Size++;
+        }
+
+    }
+
+
+}
+
+template<typename T>
+void List<T>::remove_add(int index)
+{
+    if (index == 0)
+    {
+        pop_front();
+    }
+    else
+    {
+        Node<T>* previous = this->head;
+        for (int i = 0; i < index - 1; i++)
+        {
+            previous = previous->pNext;
+        }
+
+        Node<T>* toDelete = previous->pNext;
+        previous->pNext = toDelete->pNext;
+
+        delete toDelete;
+        Size--;
+        
+    }
+}
+
+template<typename T>
+void List<T>::clear()
+{
+    while (Size)
+    {
+        pop_front();
+    }
 }
 
 template<typename T>
@@ -99,17 +190,18 @@ int main()
 
     List<int> lst;
 
-
-
     int numbersCount;
     cin >> numbersCount;
 
     for (int i = 0; i < numbersCount; i++)
     {
         lst.push_back(rand() % 10);
+        cout << lst[i] << " ";
     }
 
-    cout <<"Размер списка: " << lst.GetSize() << endl;
+    cout << endl <<"Размер списка: " << lst.GetSize() << endl;
+
+    lst.pop_back();
 
     for (int i = 0; i < lst.GetSize(); i++)
     {
@@ -118,13 +210,3 @@ int main()
 
 }
 
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
